@@ -5,22 +5,8 @@
     
     <!-- 最新和热门区域 -->
     <div class="feature-section">
-      <div class="feature-card" @click="goToCategory('new')">
-        <text class="feature-title">New</text>
-        <image class="feature-img" src="/assets/img/new.png"></image>
-        <div class="feature-bottom">
-          <text class="feature-label">最新</text>
-          <image class="go-icon" src="/assets/img/go.png"></image>
-        </div>
-      </div>
-      <div class="feature-card" @click="goToCategory('hot')">
-        <text class="feature-title-hot">热门</text>
-        <image class="feature-img" src="/assets/img/remen.png"></image>
-        <div class="feature-bottom">
-          <text class="feature-label">热门</text>
-          <image class="go-icon" src="/assets/img/go.png"></image>
-        </div>
-      </div>
+      <image class="feature-card-img" src="/assets/img/new.png" @click="goToCategory('new')"></image>
+      <image class="feature-card-img" src="/assets/img/remen.png" @click="goToCategory('hot')"></image>
     </div>
     
     <!-- 分类列表 -->
@@ -93,53 +79,11 @@ export default {
   padding-top: 20 * $size-factor;
 }
 
-.feature-card {
-  width: 160 * $size-factor;
+.feature-card-img {
+  width: 164 * $size-factor;
   height: 100 * $size-factor;
-  background-color: #f8f8f8;
   border-radius: 12 * $size-factor;
-  padding: 12 * $size-factor;
-  flex-direction: column;
-  position: relative;
-}
-
-.feature-title {
-  font-size: 20 * $size-factor;
-  font-weight: bold;
-  color: #000000;
-}
-
-.feature-title-hot {
-  font-size: 20 * $size-factor;
-  font-weight: bold;
-  color: #00c8aa;
-}
-
-.feature-img {
-  position: absolute;
-  right: 10 * $size-factor;
-  top: 8 * $size-factor;
-  width: 60 * $size-factor;
-  height: 60 * $size-factor;
-  object-fit: contain;
-}
-
-.feature-bottom {
-  flex-direction: row;
-  align-items: center;
-  margin-top: auto;
-}
-
-.feature-label {
-  font-size: 12 * $size-factor;
-  color: #666666;
-  margin-right: 6 * $size-factor;
-}
-
-.go-icon {
-  width: 36 * $size-factor;
-  height: 18 * $size-factor;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .category-list {
