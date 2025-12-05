@@ -1,0 +1,133 @@
+<template>
+  <div class="wrapper">
+    <div class="header">
+      <div class="back-btn" onclick="goBack">
+        <image class="back-icon" src="/assets/img/back.png"></image>
+      </div>
+      <text class="header-title">{{title}}</text>
+      <div class="back-btn"></div>
+    </div>
+
+    <list class="grid-list">
+      <list-item type="row" class="grid-row" for="{{listData}}">
+        <div class="grid-item" onclick="goToDetail">
+          <image class="item-img" src="/assets/img/logo.png"></image>
+          <div class="tag">
+            <text class="tag-text">最新</text>
+          </div>
+        </div>
+        <div class="grid-item" onclick="goToDetail">
+          <image class="item-img" src="/assets/img/logo.png"></image>
+          <div class="tag">
+            <text class="tag-text">最新</text>
+          </div>
+        </div>
+      </list-item>
+    </list>
+  </div>
+</template>
+
+<script>
+import router from '@system.router'
+
+export default {
+  data() {
+    return {
+      title: '最新',
+      listData: [1, 2, 3, 4, 5, 6] // Mock data for rows
+    }
+  },
+  onInit() {
+    if (this.title) {
+      this.$page.setTitleBar({ text: this.title })
+    }
+  },
+  goBack() {
+    router.back()
+  },
+  goToDetail() {
+    router.push({
+      uri: '/pages/DemoDetail'
+    })
+  }
+}
+</script>
+
+<style lang="scss">
+@import './../../assets/styles/style.scss';
+
+.wrapper {
+  flex: 1;
+  flex-direction: column;
+  background-image: url('/assets/img/loading-bg.png');
+  background-size: 100% 100%;
+}
+
+.header {
+  height: 60 * $size-factor;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16 * $size-factor;
+}
+
+.back-btn {
+  width: 40 * $size-factor;
+  height: 40 * $size-factor;
+  justify-content: center;
+  align-items: center;
+}
+
+.back-icon {
+  width: 24 * $size-factor;
+  height: 24 * $size-factor;
+  object-fit: contain;
+}
+
+.header-title {
+  font-size: 20 * $size-factor;
+  color: #000000;
+  font-weight: bold;
+}
+
+.grid-list {
+  flex: 1;
+  padding: 16 * $size-factor;
+}
+
+.grid-row {
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 16 * $size-factor;
+}
+
+.grid-item {
+  width: 166 * $size-factor;
+  height: 240 * $size-factor;
+  border-radius: 12 * $size-factor;
+  background-color: #f0f0f0;
+  position: relative;
+}
+
+.item-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 12 * $size-factor;
+  object-fit: cover;
+}
+
+.tag {
+  position: absolute;
+  right: 8 * $size-factor;
+  bottom: 8 * $size-factor;
+  background-color: #8c52ff;
+  padding: 4 * $size-factor 12 * $size-factor;
+  border-radius: 4 * $size-factor;
+}
+
+.tag-text {
+  font-size: 12 * $size-factor;
+  color: #ffffff;
+  font-weight: bold;
+}
+</style>

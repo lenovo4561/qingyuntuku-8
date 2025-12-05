@@ -1,0 +1,149 @@
+<template>
+  <div class="page-container">
+    <!-- 用户信息区域 -->
+    <div class="user-info">
+      <image class="avatar" src="/assets/img/a.png"></image>
+      <text class="username">王凡玄</text>
+    </div>
+
+    <!-- 服务卡片 -->
+    <div class="service-card">
+      <text class="card-title">其他服务</text>
+      
+      <div class="service-item" onclick="openAgreement">
+        <div class="item-left">
+          <image class="item-icon" src="/assets/img/yonghuxieyi.png"></image>
+          <text class="item-text">用户协议</text>
+        </div>
+        <image class="arrow-icon" src="/assets/img/jiantou.png"></image>
+      </div>
+      
+      <div class="divider"></div>
+
+      <div class="service-item" onclick="openPrivacy">
+        <div class="item-left">
+          <image class="item-icon" src="/assets/img/yinsizhengce-1.png"></image>
+          <text class="item-text">隐私政策</text>
+        </div>
+        <image class="arrow-icon" src="/assets/img/jiantou.png"></image>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import router from '@system.router'
+
+export default {
+  data() {
+    return {}
+  },
+  onInit() {
+    console.log('Wode page initialized')
+  },
+  openAgreement() {
+    router.push({
+      uri: '/pages/Web',
+      params: {
+        url: 'https://api.51dsp.cn/index/agreement.do?pn=com.qingyunjstk.qyposition',
+        title: '用户协议'
+      }
+    })
+  },
+  openPrivacy() {
+    router.push({
+      uri: '/pages/Web',
+      params: {
+        url: 'https://api.51dsp.cn/index/privacy.do?pn=com.qingyunjstk.qyposition',
+        title: '隐私政策'
+      }
+    })
+  }
+}
+</script>
+
+<style lang="scss">
+@import './../../../assets/styles/style.scss';
+
+.page-container {
+  flex: 1;
+  flex-direction: column;
+  background-image: url('/assets/img/wode-bg.png');
+  background-size: 100% 100%;
+  padding: 0 16 * $size-factor;
+}
+
+.user-info {
+  flex-direction: row;
+  align-items: center;
+  margin-top: 80 * $size-factor;
+  margin-bottom: 40 * $size-factor;
+  padding-left: 16 * $size-factor;
+}
+
+.avatar {
+  width: 70 * $size-factor;
+  height: 70 * $size-factor;
+  border-radius: 35 * $size-factor;
+  border: 2 * $size-factor solid #ffffff;
+  margin-right: 16 * $size-factor;
+}
+
+.username {
+  font-size: 20 * $size-factor;
+  color: #000000;
+  font-weight: bold;
+}
+
+.service-card {
+  background-color: #ffffff;
+  border-radius: 12 * $size-factor;
+  padding: 20 * $size-factor;
+  flex-direction: column;
+}
+
+.card-title {
+  font-size: 16 * $size-factor;
+  color: #000000;
+  font-weight: bold;
+  margin-bottom: 20 * $size-factor;
+}
+
+.service-item {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 40 * $size-factor;
+}
+
+.item-left {
+  flex-direction: row;
+  align-items: center;
+}
+
+.item-icon {
+  width: 24 * $size-factor;
+  height: 24 * $size-factor;
+  margin-right: 12 * $size-factor;
+  object-fit: contain;
+}
+
+.item-text {
+  font-size: 14 * $size-factor;
+  color: #333333;
+}
+
+.arrow-icon {
+  width: 16 * $size-factor;
+  height: 16 * $size-factor;
+  object-fit: contain;
+  opacity: 0.5;
+}
+
+.divider {
+  height: 1px;
+  background-color: #f0f0f0;
+  margin: 12 * $size-factor 0;
+  margin-left: 36 * $size-factor; 
+}
+</style>

@@ -1,0 +1,179 @@
+<template>
+  <div class="page-container">
+    <!-- 顶部Banner -->
+    <image class="banner" src="/assets/img/banner-3.png"></image>
+    
+    <!-- 顶部圆角容器 -->
+    <div class="content-container">
+      <!-- 标签切换 -->
+      <div class="tab-switch">
+        <div class="tab-item {{currentType === 'wallpaper' ? 'active' : ''}}" onclick="switchType('wallpaper')">
+          <text class="tab-text {{currentType === 'wallpaper' ? 'text-active' : ''}}">壁纸</text>
+        </div>
+        <div class="tab-item {{currentType === 'avatar' ? 'active' : ''}}" onclick="switchType('avatar')">
+          <text class="tab-text {{currentType === 'avatar' ? 'text-active' : ''}}">头像</text>
+        </div>
+      </div>
+
+      <!-- 内容列表 -->
+      <list class="grid-list">
+        <list-item type="row" class="grid-row" for="{{gridRows}}">
+          <div class="grid-item">
+            <image class="item-img" src="/assets/img/logo.png"></image>
+            <div class="tag">
+              <text class="tag-text">{{$item.left.tag}}</text>
+            </div>
+          </div>
+          <div class="grid-item" if="{{$item.right}}">
+            <image class="item-img" src="/assets/img/logo.png"></image>
+            <div class="tag">
+              <text class="tag-text">{{$item.right.tag}}</text>
+            </div>
+          </div>
+        </list-item>
+      </list>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      currentType: 'wallpaper',
+      wallpaperList: [
+        { tag: '萌宠' },
+        { tag: '人物' },
+        { tag: '人物' },
+        { tag: '人物' },
+        { tag: '萌宠' },
+        { tag: '人物' }
+      ],
+      avatarList: [
+        { tag: '动漫' },
+        { tag: '自然' },
+        { tag: '萌宠' },
+        { tag: '人物' }
+      ],
+      gridRows: []
+    }
+  },
+  onInit() {
+    console.log('Xihuan page initialized')
+    this.updateGridRows(this.wallpaperList)
+  },
+  switchType(type) {
+    this.currentType = type
+    const list = type === 'wallpaper' ? this.wallpaperList : this.avatarList
+    this.updateGridRows(list)
+  },
+  updateGridRows(list) {
+    const rows = []
+    for (let i = 0; i < list.length; i += 2) {
+      rows.push({
+        left: list[i],
+        right: list[i + 1] || null
+      })
+    }
+    this.gridRows = rows
+  }
+}
+</script>
+
+<style lang="scss">
+@import './../../../assets/styles/style.scss';
+
+.page-container {
+  flex: 1;
+  flex-direction: column;
+  background-color: #ffffff;
+}
+
+.banner {
+  width: 100%;
+  height: 200 * $size-factor;
+  object-fit: cover;
+}
+
+.content-container {
+  flex: 1;
+  flex-direction: column;
+  margin-top: -40 * $size-factor;
+  background-color: #ffffff;
+  border-top-left-radius: 20 * $size-factor;
+  border-top-right-radius: 20 * $size-factor;
+  padding: 16 * $size-factor;
+}
+
+.tab-switch {
+  flex-direction: row;
+  background-color: #e0fbf6;
+  border-radius: 8 * $size-factor;
+  padding: 4 * $size-factor;
+  margin-bottom: 16 * $size-factor;
+}
+
+.tab-item {
+  flex: 1;
+  height: 36 * $size-factor;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6 * $size-factor;
+}
+
+.active {
+  background-color: #5cebc9;
+}
+
+.tab-text {
+  font-size: 16 * $size-factor;
+  color: #999999;
+  font-weight: bold;
+}
+
+.text-active {
+  color: #000000;
+}
+
+.grid-list {
+  flex: 1;
+  flex-direction: column;
+}
+
+.grid-row {
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 12 * $size-factor;
+}
+
+.grid-item {
+  width: 164 * $size-factor;
+  height: 220 * $size-factor;
+  border-radius: 12 * $size-factor;
+  background-color: #f0f0f0;
+  position: relative;
+}
+
+.item-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 12 * $size-factor;
+  object-fit: cover;
+}
+
+.tag {
+  position: absolute;
+  right: 8 * $size-factor;
+  bottom: 8 * $size-factor;
+  background-color: #a066ff;
+  padding: 4 * $size-factor 12 * $size-factor;
+  border-radius: 4 * $size-factor;
+}
+
+.tag-text {
+  font-size: 12 * $size-factor;
+  color: #ffffff;
+  font-weight: bold;
+}
+</style>
+
