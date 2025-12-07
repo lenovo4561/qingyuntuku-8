@@ -2,14 +2,22 @@
   <div class="wrapper">
     <div class="mask" if="{{show}}">
       <div class="modal-container">
-        <image class="logo" src="/assets/img/logo.png"></image>
+        <image class="logo" src="/pkg/assets/img/logo.png"></image>
         <text class="app-name">青云图库</text>
-        
+
         <div class="agreement-wrap">
           <text class="title">用户协议及隐私政策</text>
           <div class="agreement-content">
             <text class="context">
-              <span>尊敬的用户：欢迎使用"</span><span class="highlight">青云图库</span><span>"，在您使用前请仔细阅读</span><a class="link" @click="openPrivacy">《隐私政策》</a><span>和</span><a class="link" @click="openAgreement">《用户协议》</a><span>，我们将严格遵守您同意的各项条款使用您的信息，以便为您提供更好的服务。点击"同意"意味着您自愿遵守相关政策，我们将严格保护您的个人信息，确保信息安全。</span>
+              <span>尊敬的用户：欢迎使用"</span
+              ><span class="highlight">青云图库</span
+              ><span>"，在您使用前请仔细阅读</span
+              ><a class="link" @click="openPrivacy">《隐私政策》</a
+              ><span>和</span
+              ><a class="link" @click="openAgreement">《用户协议》</a
+              ><span
+                >，我们将严格遵守您同意的各项条款使用您的信息，以便为您提供更好的服务。点击"同意"意味着您自愿遵守相关政策，我们将严格保护您的个人信息，确保信息安全。</span
+              >
             </text>
           </div>
           <div class="btn-group">
@@ -31,8 +39,7 @@ import router from '@system.router'
 
 export default {
   props: ['show'],
-  data: {
-  },
+  data: {},
   agree() {
     this.$emit('agreeEvt')
   },
@@ -41,18 +48,20 @@ export default {
   },
   openAgreement() {
     router.push({
-      uri: '/pages/Web',
+      uri: '/pkg/pages/Web',
       params: {
-        url: 'https://api.51dsp.cn/index/agreement.do?pn=com.qingyunjstk.qyposition',
+        url:
+          'https://api.51dsp.cn/index/agreement.do?pn=com.qingyunjstk.qyposition',
         title: '用户协议'
       }
     })
   },
   openPrivacy() {
     router.push({
-      uri: '/pages/Web',
+      uri: '/pkg/pages/Web',
       params: {
-        url: 'https://api.51dsp.cn/index/privacy.do?pn=com.qingyunjstk.qyposition',
+        url:
+          'https://api.51dsp.cn/index/privacy.do?pn=com.qingyunjstk.qyposition',
         title: '隐私政策'
       }
     })

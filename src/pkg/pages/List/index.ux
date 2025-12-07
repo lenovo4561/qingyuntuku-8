@@ -1,0 +1,235 @@
+<template>
+  <div class="wrapper" style="{{bgStyle}}">
+    <div class="header">
+      <div class="back-btn" onclick="goBack">
+        <image class="back-icon" src="/pkg/assets/img/back.png"></image>
+      </div>
+      <text class="header-title">{{ title }}</text>
+      <div class="back-btn"></div>
+    </div>
+
+    <list class="grid-list">
+      <list-item type="row" class="grid-row" for="{{gridRows}}">
+        <div class="grid-item" onclick="goToDetail($item.left.url)">
+          <image class="item-img" src="{{$item.left.url}}"></image>
+          <div class="tag">
+            <text class="tag-text">{{ $item.left.tag }}</text>
+          </div>
+        </div>
+        <div
+          class="grid-item"
+          if="{{$item.right}}"
+          onclick="goToDetail($item.right.url)"
+        >
+          <image class="item-img" src="{{$item.right.url}}"></image>
+          <div class="tag">
+            <text class="tag-text">{{ $item.right.tag }}</text>
+          </div>
+        </div>
+      </list-item>
+    </list>
+  </div>
+</template>
+
+<script>
+import router from '@system.router'
+
+export default {
+  protected: {
+    title: '最新',
+    type: 'new'
+  },
+  private: {
+    gridRows: [],
+    bgImage: '/pkg/assets/img/top-bg-2.png',
+    bgStyle: '',
+    currentTag: '',
+    isAvatar: false
+  },
+  onInit() {
+    this.initBgImage()
+    this.initListData()
+  },
+  initBgImage() {
+    // 只有壁纸的最新类型使用 top-bg-2.png，其他都使用 top-bg.png
+    if (this.type === 'new') {
+      this.bgImage = '/pkg/assets/img/top-bg-2.png'
+    } else {
+      this.bgImage = '/pkg/assets/img/top-bg.png'
+    }
+    this.bgStyle = `background-image: url('${this.bgImage}')`
+  },
+  initListData() {
+    const list = []
+    let baseUrl = ''
+    let tag = ''
+    let isAvatar = false
+
+    // 壁纸类型
+    if (this.type === 'hot') {
+      baseUrl = 'https://cdn.shijinzhuang.com/qcloud/bz/rm/'
+      tag = '热门'
+    } else if (this.type === 'dongman') {
+      baseUrl = 'https://cdn.shijinzhuang.com/qcloud/bz/dm/'
+      tag = '动漫'
+    } else if (this.type === 'renwu') {
+      baseUrl = 'https://cdn.shijinzhuang.com/qcloud/bz/rw/'
+      tag = '人物'
+    } else if (this.type === 'mengchong') {
+      baseUrl = 'https://cdn.shijinzhuang.com/qcloud/bz/mc/'
+      tag = '萌宠'
+    } else if (this.type === 'ziran') {
+      baseUrl = 'https://cdn.shijinzhuang.com/qcloud/bz/zr/'
+      tag = '自然'
+    } else if (this.type === 'new') {
+      baseUrl = 'https://cdn.shijinzhuang.com/qcloud/bz/zx/'
+      tag = '最新'
+      // 头像类型
+    } else if (this.type === 'tx_new') {
+      baseUrl = 'https://cdn.shijinzhuang.com/qcloud/tx/zx/'
+      tag = '最新'
+      isAvatar = true
+    } else if (this.type === 'tx_hot') {
+      baseUrl = 'https://cdn.shijinzhuang.com/qcloud/tx/rm/'
+      tag = '热门'
+      isAvatar = true
+    } else if (this.type === 'tx_dongman') {
+      baseUrl = 'https://cdn.shijinzhuang.com/qcloud/tx/dm/'
+      tag = '动漫'
+      isAvatar = true
+    } else if (this.type === 'tx_renwu') {
+      baseUrl = 'https://cdn.shijinzhuang.com/qcloud/tx/rw/'
+      tag = '人物'
+      isAvatar = true
+    } else if (this.type === 'tx_mengchong') {
+      baseUrl = 'https://cdn.shijinzhuang.com/qcloud/tx/mc/'
+      tag = '萌宠'
+      isAvatar = true
+    } else if (this.type === 'tx_ziran') {
+      baseUrl = 'https://cdn.shijinzhuang.com/qcloud/tx/zr/'
+      tag = '自然'
+      isAvatar = true
+    } else {
+      // Default to 'new' wallpaper
+      baseUrl = 'https://cdn.shijinzhuang.com/qcloud/bz/zx/'
+      tag = '最新'
+    }
+
+    this.currentTag = tag
+    this.isAvatar = isAvatar
+
+    for (let i = 1; i <= 20; i++) {
+      list.push({
+        url: `${baseUrl}${i}.jpg`,
+        tag: tag
+      })
+    }
+    // 转换为两列布局
+    const rows = []
+    for (let i = 0; i < list.length; i += 2) {
+      rows.push({
+        left: list[i],
+        right: list[i + 1] || null
+      })
+    }
+    this.gridRows = rows
+  },
+  goBack() {
+    router.back()
+  },
+  goToDetail(url) {
+    router.push({
+      uri: '/pkg/pages/DemoDetail',
+      params: {
+        imgUrl: url,
+        title: this.title,
+        tag: this.currentTag,
+        type: this.isAvatar ? 'avatar' : 'wallpaper'
+      }
+    })
+  }
+}
+</script>
+
+<style lang="scss">
+@import './../../assets/styles/style.scss';
+
+.wrapper {
+  flex: 1;
+  flex-direction: column;
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+  background-color: #f5f5f5;
+}
+
+.header {
+  height: 60 * $size-factor;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16 * $size-factor;
+}
+
+.back-btn {
+  width: 40 * $size-factor;
+  height: 40 * $size-factor;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 20 * $size-factor;
+}
+
+.back-icon {
+  width: 24 * $size-factor;
+  height: 24 * $size-factor;
+  object-fit: contain;
+}
+
+.header-title {
+  font-size: 18 * $size-factor;
+  color: #000000;
+  font-weight: bold;
+}
+
+.grid-list {
+  flex: 1;
+  padding: 16 * $size-factor;
+}
+
+.grid-row {
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 12 * $size-factor;
+}
+
+.grid-item {
+  width: 158 * $size-factor;
+  height: 240 * $size-factor;
+  border-radius: 16 * $size-factor;
+  background-color: #f0f0f0;
+  position: relative;
+}
+
+.item-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 16 * $size-factor;
+  object-fit: cover;
+}
+
+.tag {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background-color: #8c52ff;
+  padding: 4 * $size-factor 12 * $size-factor;
+  border-top-left-radius: 16 * $size-factor;
+  border-bottom-right-radius: 16 * $size-factor;
+}
+
+.tag-text {
+  font-size: 12 * $size-factor;
+  color: #ffffff;
+  font-weight: bold;
+}
+</style>

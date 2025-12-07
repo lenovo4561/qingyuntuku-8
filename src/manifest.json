@@ -29,6 +29,9 @@
     },
     {
       "name": "system.app"
+    },
+    {
+      "name": "system.request"
     }
   ],
   "permissions": [
@@ -39,7 +42,7 @@
   "template/official": "demo-template",
   "config": {
     "logLevel": "debug",
-    "designWidth": 1080
+    "designWidth": 250
   },
   "router": {
     "entry": "pages/Launch",
@@ -47,20 +50,26 @@
       "pages/Launch": {
         "component": "index"
       },
-      "pages/Demo": {
+      "pkg/pages/Demo": {
         "component": "index"
       },
-      "pages/DemoDetail": {
+      "pkg/pages/DemoDetail": {
         "component": "index"
       },
-      "pages/Web": {
+      "pkg/pages/List": {
         "component": "index"
       },
-      "pages/List": {
+      "pkg/pages/Web": {
         "component": "index"
       }
     }
   },
+  "subpackages": [
+    {
+      "name": "pkg",
+      "resource": "pkg"
+    }
+  ],
   "display": {
     "titleBarBackgroundColor": "#f2f2f2",
     "titleBarTextColor": "#414141",
@@ -69,17 +78,18 @@
       "pages/Launch": {
         "titleBar": false
       },
-      "pages/Demo": {
+      "pkg/pages/Demo": {
         "titleBar": false,
         "menu": false
       },
-      "pages/DemoDetail": {
-        "titleBarText": "详情页"
+      "pkg/pages/DemoDetail": {
+        "titleBar": false
       },
-      "pages/List": {
+      "pkg/pages/List": {
+        "titleBar": false,
         "titleBarText": "列表"
       },
-      "pages/Web": {
+      "pkg/pages/Web": {
         "titleBarText": "详情"
       }
     }

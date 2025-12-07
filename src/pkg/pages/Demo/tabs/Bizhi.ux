@@ -1,0 +1,188 @@
+<template>
+  <div class="page-container">
+    <!-- 顶部Banner -->
+    <image class="banner" src="/pkg/assets/img/banner.png"></image>
+
+    <!-- 最新和热门区域 -->
+    <div class="feature-section">
+      <image
+        class="feature-card-img"
+        src="/pkg/assets/img/new.png"
+        @click="goToCategory('new')"
+      ></image>
+      <image
+        class="feature-card-img"
+        src="/pkg/assets/img/remen.png"
+        @click="goToCategory('hot')"
+      ></image>
+    </div>
+
+    <!-- 分类列表 -->
+    <div class="category-list">
+      <div
+        class="category-item"
+        for="{{categories}}"
+        @click="goToCategory($item.id)"
+      >
+        <image class="category-icon" src="{{$item.icon}}"></image>
+        <div class="category-info">
+          <text class="category-name">{{ $item.name }}</text>
+          <text class="category-en">{{ $item.enName }}</text>
+        </div>
+        <image class="category-go" src="/pkg/assets/img/go.png"></image>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import router from '@system.router'
+
+export default {
+  data() {
+    return {
+      categories: [
+        {
+          id: 'dongman',
+          name: '动漫',
+          enName: 'Anime',
+          icon: '/pkg/assets/img/dongman.png'
+        },
+        {
+          id: 'renwu',
+          name: '人物',
+          enName: 'Character',
+          icon: '/pkg/assets/img/renwu.png'
+        },
+        {
+          id: 'mengchong',
+          name: '萌宠',
+          enName: 'Cute pet',
+          icon: '/pkg/assets/img/mengchong.png'
+        },
+        {
+          id: 'ziran',
+          name: '自然',
+          enName: 'Nature',
+          icon: '/pkg/assets/img/ziran.png'
+        }
+      ]
+    }
+  },
+  onInit() {
+    console.log('Bizhi page initialized')
+  },
+  goToCategory(categoryId) {
+    console.log('Go to category:', categoryId)
+    if (categoryId === 'new') {
+      router.push({
+        uri: '/pkg/pages/List',
+        params: { title: '最新', type: 'new' }
+      })
+    } else if (categoryId === 'hot') {
+      router.push({
+        uri: '/pkg/pages/List',
+        params: { title: '热门', type: 'hot' }
+      })
+    } else if (categoryId === 'dongman') {
+      router.push({
+        uri: '/pkg/pages/List',
+        params: { title: '动漫', type: 'dongman' }
+      })
+    } else if (categoryId === 'renwu') {
+      router.push({
+        uri: '/pkg/pages/List',
+        params: { title: '人物', type: 'renwu' }
+      })
+    } else if (categoryId === 'mengchong') {
+      router.push({
+        uri: '/pkg/pages/List',
+        params: { title: '萌宠', type: 'mengchong' }
+      })
+    } else if (categoryId === 'ziran') {
+      router.push({
+        uri: '/pkg/pages/List',
+        params: { title: '自然', type: 'ziran' }
+      })
+    } else {
+      router.push({
+        uri: '/pkg/pages/DemoDetail',
+        params: { category: categoryId }
+      })
+    }
+  }
+}
+</script>
+
+<style lang="scss">
+@import './../../../assets/styles/style.scss';
+
+.page-container {
+  flex: 1;
+  flex-direction: column;
+  background-color: #ffffff;
+}
+
+.banner {
+  width: 100%;
+  height: 180 * $size-factor;
+  object-fit: cover;
+}
+
+.feature-section {
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 20 * $size-factor 8 * $size-factor 16 * $size-factor;
+}
+
+.feature-card-img {
+  width: 164 * $size-factor;
+  height: 100 * $size-factor;
+  border-radius: 12 * $size-factor;
+  object-fit: fill;
+}
+
+.category-list {
+  flex: 1;
+  flex-direction: column;
+  padding: 0 16 * $size-factor;
+}
+
+.category-item {
+  flex-direction: row;
+  align-items: center;
+  padding: 16 * $size-factor 0;
+  border-bottom-width: 1px;
+  border-bottom-color: #f0f0f0;
+}
+
+.category-icon {
+  width: 50 * $size-factor;
+  height: 50 * $size-factor;
+  object-fit: contain;
+  margin-right: 16 * $size-factor;
+}
+
+.category-info {
+  flex: 1;
+  flex-direction: column;
+}
+
+.category-name {
+  font-size: 16 * $size-factor;
+  font-weight: bold;
+  color: #000000;
+  margin-bottom: 4 * $size-factor;
+}
+
+.category-en {
+  font-size: 12 * $size-factor;
+  color: #999999;
+}
+
+.category-go {
+  width: 50 * $size-factor;
+  height: 24 * $size-factor;
+  object-fit: contain;
+}
+</style>

@@ -2,13 +2,16 @@
 
 <template>
   <div class="container">
-    <image class="bg" src="/assets/img/loading-bg.png"></image>
+    <image class="bg" src="/pkg/assets/img/loading-bg.png"></image>
     <div class="content">
-      <image class="logo" src="/assets/img/logo.png"></image>
+      <image class="logo" src="/pkg/assets/img/logo.png"></image>
       <text class="app-name">青云图库</text>
     </div>
-    
-    <privacy-modal show="{{showPrivacy}}" onagree-evt="handleAgree"></privacy-modal>
+
+    <privacy-modal
+      show="{{showPrivacy}}"
+      onagree-evt="handleAgree"
+    ></privacy-modal>
   </div>
 </template>
 
@@ -26,7 +29,7 @@ export default {
     // 检查是否已同意协议
     storage.get({
       key: 'agreed_privacy',
-      success: (data) => {
+      success: data => {
         if (data === 'true') {
           // 已同意，延迟跳转
           setTimeout(() => {
@@ -53,7 +56,7 @@ export default {
   },
   goHome() {
     router.replace({
-      uri: '/pages/Demo'
+      uri: '/pkg/pages/Demo'
     })
   }
 }

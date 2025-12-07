@@ -1,0 +1,292 @@
+<template>
+  <div class="page-container">
+    <!-- 顶部Banner -->
+    <image class="banner" src="{{bannerImg}}"></image>
+
+    <!-- 顶部圆角容器 -->
+    <div class="content-container">
+      <!-- 标签切换 -->
+      <div class="tab-switch">
+        <div
+          class="tab-item {{currentType === 'wallpaper' ? 'active' : ''}}"
+          onclick="switchType('wallpaper')"
+        >
+          <text
+            class="tab-text {{currentType === 'wallpaper' ? 'text-active' : ''}}"
+            >壁纸</text
+          >
+        </div>
+        <div
+          class="tab-item {{currentType === 'avatar' ? 'active' : ''}}"
+          onclick="switchType('avatar')"
+        >
+          <text
+            class="tab-text {{currentType === 'avatar' ? 'text-active' : ''}}"
+            >头像</text
+          >
+        </div>
+      </div>
+
+      <!-- 空状态 -->
+      <div class="empty-state" if="{{!gridRows || gridRows.length === 0}}">
+        <image class="empty-icon" src="/pkg/assets/img/zanwu.png"></image>
+        <text class="empty-text">暂无收藏~</text>
+      </div>
+
+      <!-- 内容列表 -->
+      <div class="grid-list" if="{{gridRows && gridRows.length > 0}}">
+        <div class="grid-row" for="{{gridRows}}">
+          <div class="grid-item" onclick="goToDetail($item.left)">
+            <image class="item-img" src="{{$item.left.url}}"></image>
+            <div class="tag">
+              <text class="tag-text">{{ $item.left.tag }}</text>
+            </div>
+          </div>
+          <div
+            class="grid-item"
+            if="{{$item.right}}"
+            onclick="goToDetail($item.right)"
+          >
+            <image class="item-img" src="{{$item.right.url}}"></image>
+            <div class="tag">
+              <text class="tag-text">{{ $item.right.tag }}</text>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import storage from '@system.storage'
+import router from '@system.router'
+
+export default {
+  data() {
+    return {
+      currentType: 'wallpaper',
+      wallpaperList: [],
+      avatarList: [],
+      gridRows: [],
+      allFavorites: [],
+      bannerImg: '/pkg/assets/img/banner-2.png'
+    }
+  },
+  onInit() {
+    console.log('Xihuan page initialized')
+    this.loadFavorites()
+  },
+  onShow() {
+    // 每次显示时重新加载数据
+    this.loadFavorites()
+  },
+  loadFavorites() {
+    const self = this
+    console.log('loadFavorites called')
+    storage.get({
+      key: 'favorites',
+      success: function(data) {
+        console.log('storage.get success, data:', data)
+        if (data) {
+          try {
+            const favorites = JSON.parse(data)
+            console.log('Parsed favorites:', favorites.length, 'items')
+            self.allFavorites = favorites
+            // 分类
+            self.wallpaperList = favorites.filter(function(item) {
+              return item.type === 'wallpaper'
+            })
+            self.avatarList = favorites.filter(function(item) {
+              return item.type === 'avatar'
+            })
+            console.log(
+              'wallpaperList:',
+              self.wallpaperList.length,
+              'avatarList:',
+              self.avatarList.length
+            )
+            // 更新显示
+            self.updateDisplay()
+          } catch (e) {
+            console.log('Parse favorites error:', e)
+            self.wallpaperList = []
+            self.avatarList = []
+            self.gridRows = []
+          }
+        } else {
+          console.log('No favorites data')
+          self.wallpaperList = []
+          self.avatarList = []
+          self.gridRows = []
+        }
+      },
+      fail: function(err) {
+        console.log('storage.get fail:', err)
+        self.wallpaperList = []
+        self.avatarList = []
+        self.gridRows = []
+      }
+    })
+  },
+  updateDisplay() {
+    console.log('updateDisplay called, currentType:', this.currentType)
+    const list =
+      this.currentType === 'wallpaper' ? this.wallpaperList : this.avatarList
+    console.log('List to display:', list ? list.length : 0, 'items')
+    this.updateGridRows(list)
+    // 根据是否有数据更新 banner 图片
+    if (list && list.length > 0) {
+      this.bannerImg = '/pkg/assets/img/banner-3.png'
+    } else {
+      this.bannerImg = '/pkg/assets/img/banner-2.png'
+    }
+  },
+  switchType(type) {
+    this.currentType = type
+    this.updateDisplay()
+  },
+  updateGridRows(list) {
+    console.log('updateGridRows called with', list ? list.length : 0, 'items')
+    const rows = []
+    if (list && list.length > 0) {
+      for (let i = 0; i < list.length; i += 2) {
+        rows.push({
+          left: list[i],
+          right: list[i + 1] || null
+        })
+      }
+    }
+    this.gridRows = rows
+    console.log('gridRows updated:', this.gridRows.length, 'rows')
+    console.log('gridRows content:', JSON.stringify(this.gridRows))
+  },
+  goToDetail(item) {
+    router.push({
+      uri: '/pkg/pages/DemoDetail',
+      params: {
+        imgUrl: item.url,
+        title: '我的收藏',
+        tag: item.tag,
+        type: item.type
+      }
+    })
+  }
+}
+</script>
+
+<style lang="scss">
+@import './../../../assets/styles/style.scss';
+
+.page-container {
+  flex: 1;
+  flex-direction: column;
+  background-color: #ffffff;
+}
+
+.banner {
+  width: 100%;
+  height: 200 * $size-factor;
+  object-fit: cover;
+}
+
+.content-container {
+  flex: 1;
+  flex-direction: column;
+  margin-top: -40 * $size-factor;
+  background-color: #ffffff;
+  border-top-left-radius: 20 * $size-factor;
+  border-top-right-radius: 20 * $size-factor;
+  padding: 16 * $size-factor;
+}
+
+.tab-switch {
+  flex-direction: row;
+  background-color: #e0fbf6;
+  border-radius: 8 * $size-factor;
+  padding: 4 * $size-factor;
+  margin-bottom: 16 * $size-factor;
+}
+
+.tab-item {
+  flex: 1;
+  height: 36 * $size-factor;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6 * $size-factor;
+}
+
+.active {
+  background-color: #5cebc9;
+}
+
+.tab-text {
+  font-size: 16 * $size-factor;
+  color: #999999;
+  font-weight: bold;
+}
+
+.text-active {
+  color: #000000;
+}
+
+.empty-state {
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 60 * $size-factor 0;
+}
+
+.empty-icon {
+  width: 120 * $size-factor;
+  height: 120 * $size-factor;
+  margin-bottom: 16 * $size-factor;
+}
+
+.empty-text {
+  font-size: 14 * $size-factor;
+  color: #999999;
+}
+
+.grid-list {
+  flex: 1;
+  flex-direction: column;
+}
+
+.grid-row {
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 12 * $size-factor;
+}
+
+.grid-item {
+  width: 158 * $size-factor;
+  height: 220 * $size-factor;
+  border-radius: 12 * $size-factor;
+  background-color: #f0f0f0;
+  position: relative;
+}
+
+.item-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 12 * $size-factor;
+  object-fit: cover;
+}
+
+.tag {
+  position: absolute;
+  right: 8 * $size-factor;
+  bottom: 8 * $size-factor;
+  background-color: #a066ff;
+  padding: 4 * $size-factor 12 * $size-factor;
+  border-radius: 4 * $size-factor;
+}
+
+.tag-text {
+  font-size: 12 * $size-factor;
+  color: #ffffff;
+  font-weight: bold;
+}
+</style>

@@ -1,0 +1,133 @@
+<!-- 
+  Copyright (c) 2021-present, the hapjs-platform Project Contributors
+  SPDX-License-Identifier: Apache-2.0
+-->
+
+<import name="bizhi-tab" src="./tabs/Bizhi.ux"></import>
+<import name="touxiang-tab" src="./tabs/Touxiang.ux"></import>
+<import name="xihuan-tab" src="./tabs/Xihuan.ux"></import>
+<import name="wode-tab" src="./tabs/Wode.ux"></import>
+
+<template>
+  <div class="wrapper">
+    <!-- 内容区域 -->
+    <div class="content-area">
+      <bizhi-tab if="{{currentTab === 0}}"></bizhi-tab>
+      <touxiang-tab if="{{currentTab === 1}}"></touxiang-tab>
+      <xihuan-tab if="{{currentTab === 2}}"></xihuan-tab>
+      <wode-tab if="{{currentTab === 3}}"></wode-tab>
+    </div>
+
+    <!-- 底部导航栏 -->
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="switchTab(0)">
+        <image
+          class="nav-icon"
+          src="{{currentTab === 0 ? '/pkg/assets/img/bizhi-s.png' : '/pkg/assets/img/bizhi-u.png'}}"
+        ></image>
+        <text class="nav-text {{currentTab === 0 ? 'nav-text-active' : ''}}"
+          >壁纸</text
+        >
+      </div>
+      <div class="nav-item" onclick="switchTab(1)">
+        <image
+          class="nav-icon"
+          src="{{currentTab === 1 ? '/pkg/assets/img/touxiang-s.png' : '/pkg/assets/img/touxiang-u.png'}}"
+        ></image>
+        <text class="nav-text {{currentTab === 1 ? 'nav-text-active' : ''}}"
+          >头像</text
+        >
+      </div>
+      <div class="nav-item" onclick="switchTab(2)">
+        <image
+          class="nav-icon"
+          src="{{currentTab === 2 ? '/pkg/assets/img/xihuan-s.png' : '/pkg/assets/img/xihuan-u.png'}}"
+        ></image>
+        <text class="nav-text {{currentTab === 2 ? 'nav-text-active' : ''}}"
+          >喜欢</text
+        >
+      </div>
+      <div class="nav-item" onclick="switchTab(3)">
+        <image
+          class="nav-icon"
+          src="{{currentTab === 3 ? '/pkg/assets/img/wode-s.png' : '/pkg/assets/img/wode-u.png'}}"
+        ></image>
+        <text class="nav-text {{currentTab === 3 ? 'nav-text-active' : ''}}"
+          >我的</text
+        >
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { initUser } from './../../helper/init'
+
+export default {
+  private: {
+    currentTab: 0
+  },
+
+  onInit() {
+    console.log('Demo page initialized')
+    // 初始化用户请求
+    initUser()
+  },
+
+  switchTab(index) {
+    console.log('switchTab called, index:', index)
+    this.currentTab = index
+    console.log('currentTab updated to:', this.currentTab)
+  }
+}
+</script>
+
+<style lang="scss">
+@import './../../assets/styles/style.scss';
+
+.wrapper {
+  flex: 1;
+  flex-direction: column;
+  background-color: #f5f5f5;
+}
+
+.content-area {
+  flex: 1;
+  flex-direction: column;
+}
+
+.bottom-nav {
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  height: 60 * $size-factor;
+  background-color: #ffffff;
+  border-top-left-radius: 20 * $size-factor;
+  border-top-right-radius: 20 * $size-factor;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.nav-item {
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 8 * $size-factor;
+  padding-bottom: 8 * $size-factor;
+}
+
+.nav-icon {
+  width: 24 * $size-factor;
+  height: 24 * $size-factor;
+  margin-bottom: 4 * $size-factor;
+}
+
+.nav-text {
+  font-size: 12 * $size-factor;
+  color: #999999;
+}
+
+.nav-text-active {
+  color: #333333;
+}
+</style>

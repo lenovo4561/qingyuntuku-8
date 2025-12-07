@@ -1,0 +1,268 @@
+<!-- 
+  Copyright (c) 2021-present, the hapjs-platform Project Contributors
+  SPDX-License-Identifier: Apache-2.0
+-->
+
+<template>
+  <div class="wrapper">
+    <div class="header">
+      <div class="back-btn" onclick="goBack">
+        <image class="back-icon" src="/pkg/assets/img/back.png"></image>
+      </div>
+      <text class="header-title">{{ title }}</text>
+      <div class="back-btn"></div>
+    </div>
+
+    <div class="content">
+      <image class="wallpaper-img" src="{{imgUrl}}"></image>
+    </div>
+
+    <div class="action-bar">
+      <div class="action-btn download-btn" onclick="downloadWallpaper">
+        <image class="action-icon" src="/pkg/assets/img/xiazai.png"></image>
+        <text class="action-text">下载</text>
+      </div>
+      <div class="action-btn like-btn" onclick="toggleLike">
+        <image
+          class="action-icon"
+          src="{{isLiked ? '/pkg/assets/img/like-s.png' : '/pkg/assets/img/xihuan-u.png'}}"
+        ></image>
+        <text class="action-text">{{ isLiked ? '已喜欢' : '喜欢' }}</text>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import router from '@system.router'
+import prompt from '@system.prompt'
+import storage from '@system.storage'
+import request from '@system.request'
+
+export default {
+  protected: {
+    imgUrl: '',
+    title: '详情',
+    tag: '',
+    type: 'wallpaper'
+  },
+  private: {
+    isLiked: false
+  },
+  onInit() {
+    this.checkIfLiked()
+  },
+  checkIfLiked() {
+    const self = this
+    storage.get({
+      key: 'favorites',
+      success: function(data) {
+        if (data) {
+          try {
+            const favorites = JSON.parse(data)
+            self.isLiked = favorites.some(function(item) {
+              return item.url === self.imgUrl
+            })
+          } catch (e) {
+            self.isLiked = false
+          }
+        }
+      },
+      fail: function() {
+        self.isLiked = false
+      }
+    })
+  },
+  goBack() {
+    router.back()
+  },
+  downloadWallpaper() {
+    const self = this
+    prompt.showToast({
+      message: '开始下载...'
+    })
+    request.download({
+      url: self.imgUrl,
+      success: function(data) {
+        prompt.showToast({
+          message: '下载成功'
+        })
+      },
+      fail: function(data, code) {
+        prompt.showToast({
+          message: '下载失败: ' + code
+        })
+      }
+    })
+  },
+  toggleLike() {
+    const self = this
+    console.log('toggleLike called, imgUrl:', self.imgUrl, 'type:', self.type)
+    storage.get({
+      key: 'favorites',
+      success: function(data) {
+        console.log('Current favorites data:', data)
+        let favorites = []
+        if (data) {
+          try {
+            favorites = JSON.parse(data)
+          } catch (e) {
+            favorites = []
+          }
+        }
+
+        if (self.isLiked) {
+          // 取消喜欢
+          favorites = favorites.filter(function(item) {
+            return item.url !== self.imgUrl
+          })
+          self.isLiked = false
+          prompt.showToast({
+            message: '已取消喜欢'
+          })
+        } else {
+          // 添加喜欢
+          const newItem = {
+            url: self.imgUrl,
+            tag: self.tag || self.title,
+            type: self.type
+          }
+          console.log('Adding new item:', JSON.stringify(newItem))
+          favorites.push(newItem)
+          self.isLiked = true
+          prompt.showToast({
+            message: '已添加到喜欢'
+          })
+        }
+
+        console.log('Saving favorites:', JSON.stringify(favorites))
+        storage.set({
+          key: 'favorites',
+          value: JSON.stringify(favorites),
+          success: function() {
+            console.log('Favorites saved successfully')
+          },
+          fail: function(err) {
+            console.log('Favorites save failed:', err)
+          }
+        })
+      },
+      fail: function() {
+        // 首次添加
+        const favorites = [
+          {
+            url: self.imgUrl,
+            tag: self.tag || self.title,
+            type: self.type
+          }
+        ]
+        console.log('First time saving favorites:', JSON.stringify(favorites))
+        storage.set({
+          key: 'favorites',
+          value: JSON.stringify(favorites),
+          success: function() {
+            console.log('Favorites saved successfully')
+          },
+          fail: function(err) {
+            console.log('Favorites save failed:', err)
+          }
+        })
+        self.isLiked = true
+        prompt.showToast({
+          message: '已添加到喜欢'
+        })
+      }
+    })
+  }
+}
+</script>
+
+<style lang="scss">
+@import './../../assets/styles/style.scss';
+
+.wrapper {
+  flex: 1;
+  flex-direction: column;
+  background-image: url('/pkg/assets/img/loading-bg.png');
+  background-size: 100% 100%;
+}
+
+.header {
+  height: 60 * $size-factor;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16 * $size-factor;
+}
+
+.back-btn {
+  width: 40 * $size-factor;
+  height: 40 * $size-factor;
+  justify-content: center;
+  align-items: center;
+}
+
+.back-icon {
+  width: 24 * $size-factor;
+  height: 24 * $size-factor;
+  object-fit: contain;
+}
+
+.header-title {
+  font-size: 20 * $size-factor;
+  color: #000000;
+  font-weight: bold;
+}
+
+.content {
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  padding: 20 * $size-factor;
+}
+
+.wallpaper-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 16 * $size-factor;
+  object-fit: cover;
+}
+
+.action-bar {
+  height: 100 * $size-factor;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: 20 * $size-factor;
+}
+
+.action-btn {
+  width: 160 * $size-factor;
+  height: 50 * $size-factor;
+  border-radius: 25 * $size-factor;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.download-btn {
+  background-color: #8c52ff;
+}
+
+.like-btn {
+  background-color: #5cebc9;
+}
+
+.action-icon {
+  width: 20 * $size-factor;
+  height: 20 * $size-factor;
+  margin-right: 8 * $size-factor;
+  object-fit: contain;
+}
+
+.action-text {
+  font-size: 16 * $size-factor;
+  color: #ffffff;
+  font-weight: bold;
+}
+</style>
