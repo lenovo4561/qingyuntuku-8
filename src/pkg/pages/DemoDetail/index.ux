@@ -14,7 +14,7 @@
     </div>
 
     <div class="content">
-      <image class="wallpaper-img" src="{{imgUrl}}"></image>
+      <image class="{{type === 'avatar' ? 'avatar-img' : 'wallpaper-img'}}" src="{{imgUrl}}"></image>
     </div>
 
     <div class="action-bar">
@@ -38,6 +38,7 @@ import router from '@system.router'
 import prompt from '@system.prompt'
 import storage from '@system.storage'
 import request from '@system.request'
+import media from '@system.media'
 
 export default {
   protected: {
@@ -81,16 +82,47 @@ export default {
     prompt.showToast({
       message: '开始下载...'
     })
+    
+    // 对 URL 中的空格进行编码
+    const encodedUrl = self.imgUrl.replace(/\s/g, '%20')
+    
     request.download({
-      url: self.imgUrl,
+      url: encodedUrl,
       success: function(data) {
-        prompt.showToast({
-          message: '下载成功'
+        console.info('Download success, token:', data.token)
+        // 处理下载完成的文件
+        request.onDownloadComplete({
+          token: data.token,
+          success: function(ret) {
+            console.info('Download complete, path:', ret.uri)
+            // 保存到相册
+            media.saveToPhotosAlbum({
+              uri: ret.uri,
+              success: function() {
+                prompt.showToast({
+                  message: '下载成功'
+                })
+              },
+              fail: function(data, code) {
+                console.error('Save to album failed:', data, code)
+                prompt.showToast({
+                  message: '保存失败，请检查权限'
+                })
+              }
+            })
+          },
+          fail: function(data, code) {
+            console.error('Download complete check failed:', data, code)
+            prompt.showToast({
+              message: '下载失败'
+            })
+          }
         })
       },
       fail: function(data, code) {
+        console.error('Download request failed:', data, code)
         prompt.showToast({
-          message: '下载失败: ' + code
+          message: '下载请求失败: ' + code
         })
       }
     })
@@ -221,9 +253,20 @@ export default {
   padding: 20 * $size-factor;
 }
 
+/* 壁纸样式 - 填充整个区域 */
 .wallpaper-img {
   width: 100%;
   height: 100%;
+  border-radius: 16 * $size-factor;
+  object-fit: cover;
+}
+
+/* 头像样式 - 1:1 方形比例 */
+.avatar-img {
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 320 * $size-factor;
+  max-height: 320 * $size-factor;
   border-radius: 16 * $size-factor;
   object-fit: cover;
 }

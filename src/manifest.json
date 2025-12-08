@@ -32,6 +32,9 @@
     },
     {
       "name": "system.request"
+    },
+    {
+      "name": "system.media"
     }
   ],
   "permissions": [
@@ -94,7 +97,5 @@
       }
     }
   },
-  "deviceTypeList": [
-    "phone"
-  ]
+  "deviceTypeList": ["phone"]
 }
